@@ -15,6 +15,12 @@ class FoodController extends Controller
         $limit = $request->input('limit', 5);
         $name = $request->input('name');
         $tag = $request->input('tag');
+        
+        if($id == null && $name == null && $tag == null)
+        {
+            $food = Food::all();
+            return ResponseFormatter::success($food, 'Data makanan berhasil diambil');
+        }
 
         if($id)
         {
@@ -31,11 +37,11 @@ class FoodController extends Controller
         if($name)
         {
             $food->where('name', 'like', '%' . $name . '%');
-
-             if($food != null)
+            
+            if($food)
                 return ResponseFormatter::success($food->paginate($limit), 'Data makanan berhasil diambil');
             else
-                return ResponseFormatter::error(null, 'Data makanan tidak tersedia', 404);   
+                return ResponseFormatter::error(null, 'Data makanan gagal diambil', 404);               
             
         }
         
@@ -45,7 +51,7 @@ class FoodController extends Controller
         {
             $tags->where('tags.name', 'like', '%' . $tag . '%');
             
-            if($tags != null)   
+            if($tags)   
                 return ResponseFormatter::success($tags->paginate($limit), 'Data makanan berhasil diambil');
             else
                 return ResponseFormatter::error(null, 'Data makanan tidak tersedia', 404);          
